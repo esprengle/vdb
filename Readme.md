@@ -28,5 +28,5 @@ import requests as r; exec r.get('https://raw.githubusercontent.com/jsbain/vdb/m
 ``` 
 
 ## screenshots
-![watch](watch.png)
-![ui](ui.png)
+![watch window](https://raw.githubusercontent.com/jsbain/vdb/master/watch.PNG)
+![ui overview](https://raw.githubusercontent.com/jsbain/vdb/master/ui.PNG)

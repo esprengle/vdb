@@ -24,5 +24,5 @@
 Thanks to @ywangd for this method.
 
 ```python
-import requests as r; exec r.get('https://github.com/jsbain/vdb/blob/master/get-vdb.py').text
+import requests as r; exec r.get('https://raw.githubusercontent.com/jsbain/vdb/master/get_vdb.py').text
 ``` 

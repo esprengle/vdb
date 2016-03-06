@@ -67,5 +67,4 @@ with open(TEMP_ZIPFILE, 'rb') as ins:
 
 
     print 'Installation completed.'
-
-
+    os.remove(TEMP_ZIPFILE)

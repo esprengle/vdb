@@ -20,3 +20,9 @@
 	vdb.VDB().set_trace()
 	
 ```
+##install
+Thanks to @ywangd for this method.
+
+```python
+import requests as r; exec r.get('https://github.com/jsbain/vdb/blob/master/get-vdb.py').text
+``` 

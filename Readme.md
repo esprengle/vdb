@@ -26,3 +26,7 @@ Thanks to @ywangd for this method.
 ```python
 import requests as r; exec r.get('https://raw.githubusercontent.com/jsbain/vdb/master/get_vdb.py').text
 ``` 
+
+## screenshots
+![watch](watch.png)
+![ui](ui.png)

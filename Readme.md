@@ -8,7 +8,7 @@
 * During debugging, current line is highlighted, and editor opens new file if needed
 
 ##TODO:
-- breakpoint set/clear by tapping line s
+- breakpoint set/clear by tapping line #s
 - launch script via menu
 - stack up/down 
 - help menu
@@ -24,9 +24,5 @@
 Thanks to @ywangd for this method.
 
 ```python
-import requests as r; exec r.get('https://raw.githubusercontent.com/jsbain/vdb/master/get_vdb.py').text
+import requests as r; exec r.get('https://github.com/jsbain/vdb/blob/master/get-vdb.py').text
 ``` 
-
-## screenshots
-![watch window](https://raw.githubusercontent.com/jsbain/vdb/master/watch.PNG)
-![ui overview](https://raw.githubusercontent.com/jsbain/vdb/master/ui.PNG)

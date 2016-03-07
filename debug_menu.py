@@ -4,14 +4,16 @@ import editor
 from collections import OrderedDict
 
 from objc_util import *
+def expand_icon_path(image):
+	os.path.join(os.path.split(__file__)[0],'Icons',image)
 btn_dict = OrderedDict((
 					('play', 'iob:play_24'),
 					('stop', 'iob:stop_24'),
 					('up', 'iob:ios7_upload_outline_24'),
 					('down', 'iob:ios7_download_outline_24'),
-					('step_in', 'Icons/debug-step-into-24-000000.png'),
-					('step_out', 'Icons/debug-step-out-24-000000.png'),
-					('step_over', 'Icons/debug-step-over-24-000000.png'),
+					('step_in', expand_icon_path('debug-step-into-24-000000.png')),
+					('step_out', expand_icon_path('debug-step-out-24-000000.png')),
+					('step_over', expand_icon_path('debug-step-over-24-000000.png')),
 					('watch', 'iow:ios7_glasses_outline_24'),
 					('help', 'iow:help_circled_24')))
 

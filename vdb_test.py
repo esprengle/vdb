@@ -1,17 +1,20 @@
 # coding: utf-8
-import ui
+import ui,editor
 
 def test():
-	a=27
-	l={'hi':'there','hhh':[1,2,3]}
-	#print '7'
-	#def test():
 	import vdb
 	vdb.VDB().set_trace()
-	v=ui.ListDataSource()
-
+	# create some variables to try watch window
+	a=1
+	b={'key':{'b':['c','d','e']},'anotherkey':'anothervalue'}
+	c='a string'
+	#test stepping over
+	test2()
+	# step into anothe file
+	editor.get_path()
+	return 10
 def test2():
-	d=0
+	d=1
+	print(d)
+	
 test()
-
-#test()

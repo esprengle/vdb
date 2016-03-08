@@ -107,11 +107,17 @@ class VDB(bdb.Bdb):
 		DEBUGMENUTAG = hash('DEBUGMENU')
 		ed = editor._get_editor_tab().editorView()
 		debugmenuobj = ed.viewWithTag_(DEBUGMENUTAG)
-		if debugmenuobj:
-			debugmenuobj.removeFromSuperview()
-		ObjCInstance(self.debugmenu).removeFromSuperview()
+		try:
+			if debugmenuobj:
+				debugmenuobj.removeFromSuperview()
+				ObjCInstance(self.debugmenu).removeFromSuperview()
+		except AttributeError:
+			pass
 		ed.addSubview_(self.debugmenu)
 		
 	@on_main_thread
 	def hide_menu(self):
-		ObjCInstance(self.debugmenu).removeFromSuperview()
+		try:
+			ObjCInstance(self.debugmenu).removeFromSuperview()
+		except AttributeError:
+			pass

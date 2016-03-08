@@ -5,7 +5,12 @@ from collections import OrderedDict
 
 from objc_util import *
 def expand_icon_path(image):
-	os.path.join(os.path.split(__file__)[0],'Icons',image)
+	try:
+		basepath=os.path.split(__file__)[0]
+	except NameError:
+		basepath=os.path.abspath('.')
+	return os.path.join(basepath,'Icons',image)
+	
 btn_dict = OrderedDict((
 					('play', 'iob:play_24'),
 					('stop', 'iob:stop_24'),

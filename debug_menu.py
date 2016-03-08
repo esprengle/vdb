@@ -1,5 +1,5 @@
 # coding: utf-8
-import ui
+import ui,os
 import editor
 from collections import OrderedDict
 

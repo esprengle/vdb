@@ -16,5 +16,8 @@ def test():
 def test2():
 	d=1
 	print(d)
-	
+	test3()
+def test3():
+	d=2
 test()
+b=9

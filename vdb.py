@@ -13,7 +13,7 @@
 #.   help menu
 #.   optimizations for small devices
 
-import editor
+import editor,os
 import ui
 import console
 import threading

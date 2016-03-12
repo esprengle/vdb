@@ -19,9 +19,16 @@
 ## usage (where debugging is needed)
 ```python
 	import vdb
-	vdb.VDB().set_trace()
-	
+	vdb.set_trace()
 ```
+
+In addition, the following will begin debugging at the last traceback.
+
+```python
+	import vdb
+	vdb.pm()
+``` 
+
 ##install
 Thanks to @ywangd for this method.
 

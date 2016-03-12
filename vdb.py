@@ -35,9 +35,6 @@ class VDB(bdb.Bdb):
 		self.stack = []
 		self.curindex = 0
 		self.curframe = None
-		
-
-		
 
 	def setup(self, frame, t):
 		if frame and '<string>' not in frame.f_code.co_filename:
@@ -164,15 +161,16 @@ class VDB(bdb.Bdb):
 		except AttributeError:
 			pass
 def pm():
-	VDB().post_mortem()
+	dbg=	VDB()
+	dbg.interaction(sys.last_traceback.tb_frame)
 def runcall(*args,**kwargs):
 	VDB().runcall(*args,**kwargs)
 def set_trace():
 	VDB().set_trace()
 if __name__=='__main__':
 	# when run from action menu, debug call current script
-	print sys.argv
-	if sys.argv[1]=='pm':
+	import sys
+	if len(sys.argv)==2 and sys.argv[1]=='pm':
 		pm()
 	else:
 		currentfile=editor.get_path()

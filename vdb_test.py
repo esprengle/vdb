@@ -3,7 +3,7 @@ import ui,editor
 
 def test():
 	import vdb
-	vdb.VDB().set_trace()
+	vdb.set_trace()
 	# create some variables to try watch window
 	a=1
 	b={'key':{'b':['c','d','e']},'anotherkey':'anothervalue'}
@@ -17,6 +17,7 @@ def test2():
 	d=1
 	print(d)
 	test3()
+@ui.in_background
 def test3():
 	d=2
 test()

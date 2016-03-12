@@ -52,120 +52,54 @@ def is_sequence(v):
 		len(v)
 		v[0:0]
 		return True
-	except TypeError:
+	except:
 		return False
+		
 from types import ModuleType, FunctionType
 class DictTreeNode (TreeNode):
 	def __init__(self, key,value,excludetypes=[type,ModuleType,FunctionType],excludeprivate=False):
 		TreeNode.__init__(self)
 		self.title = key
-		self.value=value
+		self.value = value
 		self.leaf = isinstance(value,basestring) or (not hasattr(value,'__dict__') and not isinstance(value,dict) and not is_sequence(value))
 		self.icon_name = 'FileOther'
 		self.subtitle= repr(value)
 		self.excludetypes=excludetypes
 		self.excludeprivate=excludeprivate
+		self.parent=None
 	@property
 	def cmp_title(self):
 		return self.title.lower()
-
+	
 	def expand_children(self):
 		if self.children is not None:
 			self.expanded = True
 			return
 		if isinstance(self.value,dict):
 			items=self.value.iteritems()
+			setter=[functools.partial(self.value.__setitem__,k) for k,v in self.value.items()]
 		elif is_sequence(self.value):
 			items=[('[%d]'%i, self.value[i]) for i in range(min(len(self.value),25))]
+			setter=[functools.partial(self.value.__setitem__,i) for i in range(min(len(self.value),25)) ]
 		else:
 			keys = dir(self.value)
 			items=[(k,getattr(self.value,k)) for k in keys]
+			setter=[functools.partial(setattr,self.value,k) for k in keys]
 		children = []
-		for k,v in items:
+		
+		for i,(k,v) in enumerate(items):
 			if self.excludeprivate and k.startswith('__'):
 				continue
 			if type(v) in self.excludetypes:
 				continue
 			node = DictTreeNode(k, v)
 			node.level = self.level + 1
+			node.setter = setter[i]
 			children.append(node)
+			node.parent=self
 		self.expanded = True
 		self.children = sorted(children, key=attrgetter('leaf', 'cmp_title'))
-
-class FileTreeNode (TreeNode):
-	def __init__(self, path, show_size=True, select_dirs=True,   
-               file_pattern=None):
-		TreeNode.__init__(self)
-		self.path = path
-		self.title = os.path.split(path)[1]
-		self.select_dirs = select_dirs
-		self.file_pattern = file_pattern
-		is_dir = os.path.isdir(path)
-		self.leaf = not is_dir
-		ext = os.path.splitext(path)[1].lower()
-		if is_dir:
-			self.icon_name = 'Folder'
-		elif ext == '.py':
-			self.icon_name = 'FilePY'
-		elif ext == '.pyui':
-			self.icon_name = 'FileUI'
-		elif ext in ('.png', '.jpg', '.jpeg', '.gif'):
-			self.icon_name = 'FileImage'
-		else:
-			self.icon_name = 'FileOther'
-		self.show_size = show_size
-		if not is_dir and show_size:
-			self.subtitle = human_size((os.stat(self.path).st_size))
-		if is_dir and not select_dirs:
-			self.enabled = False
-		elif not is_dir:
-			filename = os.path.split(path)[1]
-			self.enabled = not file_pattern or re.match(file_pattern, filename)
-
-	@property
-	def cmp_title(self):
-		return self.title.lower()
-
-	def expand_children(self):
-		if self.children is not None:
-			self.expanded = True
-			return
-		files = os.listdir(self.path)
-		children = []
-		for filename in files:
-			if filename.startswith('.'):
-				continue
-			full_path = os.path.join(self.path, filename)
-			node = FileTreeNode(full_path, self.show_size, self.select_dirs, self.file_pattern)
-			node.level = self.level + 1
-			children.append(node)
-		self.expanded = True
-		self.children = sorted(children, key=attrgetter('leaf', 'cmp_title'))
-
-
-
-# Just a simple demo of a custom TreeNode class... The TreeDialogController should be initialized with async_mode=True when using this class.
-class FTPTreeNode (TreeNode):
-	def __init__(self, host, path=None, level=0):
-		TreeNode.__init__(self)
-		self.host = host
-		self.path = path
-		self.level = level
-		if path:
-			self.title = os.path.split(path)[1]
-		else:
-			self.title = self.host
-		self.leaf = path and len(os.path.splitext(path)[1]) > 0
-		self.icon_name = 'FileOther' if self.leaf else 'Folder'
-
-	def expand_children(self):
-		ftp = ftplib.FTP(self.host, timeout=10)
-		ftp.login('anonymous')
-		names = ftp.nlst(self.path or '')
-		ftp.quit()
-		self.children = [FTPTreeNode(self.host, name, self.level+1) for name in names]
-		self.expanded = True
-
+			
 class TreeDialogController (object):
 	def __init__(self, root_node, allow_multi=False, async_mode=False):
 		self.async_mode = async_mode
@@ -229,7 +163,11 @@ class TreeDialogController (object):
 
 	def tableview_number_of_rows(self, tv, section):
 		return len(self.flat_entries)
-
+	def textview_did_change(self,tv):
+		print(tv)
+		tv.entry.value=eval(tv.text)
+		tv.entry.setter(tv.entry.value)
+		print tv.entry.parent.value
 	def tableview_cell_for_row(self, tv, section, row):
 		cell = ui.TableViewCell()
 		entry = self.flat_entries[row]
@@ -240,6 +178,9 @@ class TreeDialogController (object):
 		if entry.subtitle:
 			label_frame = (label_x, 0, label_w, 26)
 			sub_label = ui.TextField(frame=(label_x, 26, label_w, 14))
+			sub_label.delegate = self
+			sub_label.action=self.textview_did_change
+			sub_label.entry=entry
 			sub_label.font = ('<System>', 12)
 			sub_label.text = entry.subtitle
 			sub_label.text_color = '#999'
@@ -391,7 +332,12 @@ def main():
 	
 	#ftp_file = ftp_dialog()
 	#print('Picked from FTP server:', ftp_file)
-	a=[1,2,3,4]
-	d=dict_dialog(globals())
+	a={'a':[1,2,3,4]}
+	b={'b':a}
+	c=[0,1,2,3,4]
+	d=dict_dialog(locals())
+	print a
+	print b
+	return d
 if __name__ == '__main__':
-	main()
+	d=main()

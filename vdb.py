@@ -163,3 +163,18 @@ class VDB(bdb.Bdb):
 			ObjCInstance(self.debugmenu).removeFromSuperview()
 		except AttributeError:
 			pass
+def pm():
+	VDB().post_mortem()
+def runcall(*args,**kwargs):
+	VDB().runcall(*args,**kwargs)
+def set_trace():
+	VDB().set_trace()
+if __name__=='__main__':
+	# when run from action menu, debug call current script
+	print sys.argv
+	if sys.argv[1]=='pm':
+		pm()
+	else:
+		currentfile=editor.get_path()
+		dbg=VDB()
+		dbg.runcall(execfile,currentfile)
